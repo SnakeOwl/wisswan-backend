@@ -2,15 +2,19 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Traits\UserPrivileges;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens, SoftDeletes, UserPrivileges;
 
     /**
      * The attributes that are mass assignable.
@@ -18,9 +22,10 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'deleted_message',
+        'avatar',
         'name',
-        'email',
-        'password',
+        // 'email', // change email via function TODO: write this function (process to change email to)
     ];
 
     /**
@@ -29,8 +34,8 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $hidden = [
-        'password',
-        'remember_token',
+        'access',
+        'deleted_message'
     ];
 
     /**
@@ -41,8 +46,21 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            // 'email_verified_at' => 'datetime',
         ];
+    }
+
+
+    
+    // ==== RELATIONS ====
+
+    // hasMany in fact, but not for this functional.
+    public function auth_code(): HasOne
+    {
+        return $this->hasOne(UserLoginCode::class)->ofMany([
+            'id' => 'max'
+        ], function (Builder $query) {
+            $query->where('expires_at', '<', now()->addMinutes(15));
+        });
     }
 }

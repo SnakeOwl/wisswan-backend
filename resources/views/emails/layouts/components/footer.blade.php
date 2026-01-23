@@ -5,6 +5,6 @@
     </div>
 
     <div>
-        Если у вас есть вопросы по сайту напишите в <a href="https://wissen-wandel.online/help">службу поддержки</a>.
+        Если у вас есть вопросы по сайту напишите в <a href="https://wisswan.online/help">службу поддержки</a>.
     </div>
 </div>

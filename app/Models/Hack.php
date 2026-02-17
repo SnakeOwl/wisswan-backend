@@ -2,27 +2,55 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\OrderByIdDesc;
+use App\Models\Scopes\OrderByRatingDesc;
 use App\Models\Traits\UsesStatuses;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+#[ScopedBy([OrderByRatingDesc::class, OrderByIdDesc::class])]
 class Hack extends Model
 {
-    use UsesStatuses;
+    use UsesStatuses;   
 
 
     protected $fillable = [
-        'title', 
-        'domen', 
+        'domen',
         'subdomen',
-        'group', 
+        'group',
         'is_global', // display the Hack on public pages
-        'value',
+        'title', // text
+        'value', // longtext
         'rating', // counter
-        'ip_last_updated', 
+        'ip_last_updated',
         'shared_link', // TODO: reserved. initialize.
         'status', // see App\Models\Traits\UsesStatuses
 
         // user_id
     ];
-            
+
+    /**
+     * Defatult values on creating
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'status' => '100',
+    ];
+
+
+    public function rating_plus()
+    {
+        $this->rating += 1;
+        $this->saveQuietly();
+    }
+
+    // ==== RELATIONS ====
+    
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+    // ---- RELATIONS ----
 }

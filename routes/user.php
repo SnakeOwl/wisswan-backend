@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\User\Hacks\HacksController;
 use App\Http\Controllers\User\Login\LoginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -15,4 +16,7 @@ Route::middleware('auth:sanctum')
         Route::get('/', function (Request $request) {
             return $request->user();
         });
+
+        Route::apiResource('hacks', HacksController::class)->except(['update']);
+        Route::post('hacks/{hack}', [HacksController::class, 'update']);
     });

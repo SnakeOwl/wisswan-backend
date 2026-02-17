@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->string('domen')->nullable();
             $table->string('subdomen')->nullable();
             $table->string('group')->nullable();
-            $table->boolean('is_global')->nullable();
+            $table->boolean('is_global')->default(false);
             $table->text('title')->nullable();
             $table->longText('value');
             $table->unsignedInteger('rating')->default(0);

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Traits\UserPrivileges;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
@@ -51,8 +52,13 @@ class User extends Authenticatable
     }
 
 
-    
+
     // ==== RELATIONS ====
+
+    public function hacks(): HasMany
+    {
+        return $this->hasMany(Hack::class);
+    }
 
     // hasMany in fact, but not for this functional.
     public function auth_code(): HasOne
@@ -63,4 +69,7 @@ class User extends Authenticatable
             $query->where('expires_at', '<', now()->addMinutes(15));
         });
     }
+
+
+    // ---- RELATIONS ----
 }

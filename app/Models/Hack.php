@@ -5,14 +5,16 @@ namespace App\Models;
 use App\Models\Scopes\OrderByIdDesc;
 use App\Models\Scopes\OrderByRatingDesc;
 use App\Models\Traits\UsesStatuses;
+use App\Observers\HacksObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[ScopedBy([OrderByRatingDesc::class, OrderByIdDesc::class])]
+#[ScopedBy([OrderByRatingDesc::class, OrderByIdDesc::class]), ObservedBy(HacksObserver::class)]
 class Hack extends Model
 {
-    use UsesStatuses;   
+    use UsesStatuses;
 
 
     protected $fillable = [
@@ -47,7 +49,7 @@ class Hack extends Model
     }
 
     // ==== RELATIONS ====
-    
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

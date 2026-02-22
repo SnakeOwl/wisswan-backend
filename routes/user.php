@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\User\Hacks\GetUsedDomainsInHacksController;
 use App\Http\Controllers\User\Hacks\HacksController;
 use App\Http\Controllers\User\Login\LoginController;
 use Illuminate\Http\Request;
@@ -19,4 +20,7 @@ Route::middleware('auth:sanctum')
 
         Route::apiResource('hacks', HacksController::class)->except(['update']);
         Route::post('hacks/{hack}', [HacksController::class, 'update']);
+        Route::post('hacks/sync-domens/{hack}', [HacksController::class, 'sync_domains']);
+
+        Route::get('get-used-domains-in-hacks', GetUsedDomainsInHacksController::class);
     });

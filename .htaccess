@@ -5,6 +5,6 @@
     RewriteRule ^(api|storage)(/.*)?$ public/$1$2 [L]
     
     # Для всего остального - прокси
-    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteCond %{REQUEST_URI}
     RewriteRule ^(.*)$ http://localhost:3030/$1 [P,L]
 </IfModule>

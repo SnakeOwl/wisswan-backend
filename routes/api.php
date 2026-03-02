@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/test', function (Request $request) {
+    info("check check");
     return 'API is working';
 });
 

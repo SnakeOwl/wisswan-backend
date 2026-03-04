@@ -24,7 +24,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'deleted_message',
-        'avatar',
+        // 'avatar', // not used, maybe should delete
         'name',
         // 'email', // change email via function TODO: write this function (process to change email to)
     ];
@@ -35,7 +35,6 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $hidden = [
-        'access',
         'deleted_message'
     ];
 

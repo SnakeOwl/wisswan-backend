@@ -3,6 +3,7 @@
 use App\Http\Controllers\User\Hacks\GetUsedDomainsInHacksController;
 use App\Http\Controllers\User\Hacks\HacksController;
 use App\Http\Controllers\User\Login\LoginController;
+use App\Http\Controllers\User\User\UpdateUserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,4 +24,7 @@ Route::middleware('auth:sanctum')
         Route::post('hacks/sync-domens/{hack}', [HacksController::class, 'sync_domains']);
 
         Route::get('get-used-domains-in-hacks', GetUsedDomainsInHacksController::class);
+
+
+        Route::post('/update/{user}', UpdateUserController::class); 
     });

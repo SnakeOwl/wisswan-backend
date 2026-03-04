@@ -30,13 +30,13 @@ trait UserPrivileges
      */
     public function isAdmin(): bool
     {
-        return $this->type == self::$RIGHT_TYPES["admin"];
+        return $this->access == self::$RIGHT_TYPES["admin"];
     }
 
     public function isManager(): bool
     {
-        return $this->type == self::$RIGHT_TYPES["manager"]
-            || $this->type == self::$RIGHT_TYPES["admin"];
+        return $this->access == self::$RIGHT_TYPES["manager"]
+            || $this->access == self::$RIGHT_TYPES["admin"];
     }
 
     /**
@@ -47,11 +47,11 @@ trait UserPrivileges
     public function setAccess($rights): void
     {
         if (is_numeric($rights)) {
-            $this->type = $rights;
+            $this->access = $rights;
         } else {
-            $this->type = self::$RIGHT_TYPES[$rights];
+            $this->access = self::$RIGHT_TYPES[$rights];
         }
 
-        $this->save();
+        $this->saveQuietly();
     }
 }

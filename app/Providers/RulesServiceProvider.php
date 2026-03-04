@@ -21,10 +21,16 @@ class RulesServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // принимает любую модель, главное чтобы у неё был user_id.
+        // Use in Request. Принимает любую модель, главное чтобы у неё был user_id.
         Gate::define('edit-model', function (User $user, Model $model) { 
             return ($user->id === $model->user_id) 
                 || $user->isAdmin();
+        });
+
+
+        // Use via UserAccessMiddleware: access:admin
+        Gate::define('admin', function (User $user) { 
+            return $user->isAdmin();
         });
     }
 }

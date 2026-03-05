@@ -16,12 +16,15 @@ class HacksController extends Controller
 {
     public function index(Request $request)
     {
-        // here hacks only for auth User;
         $user = $request->user();
+        $show_all_records = $request->has('show_all_records') && $user->isAdmin();
 
+        info('show_all_records: ' . ($show_all_records ? 'true' : 'false'));
         $filter_domains = $request->has('domains') ? $request->get('domains') : null;
 
-        $hacks = $user->hacks();
+        // here hacks only for auth User;
+        // OR all records for admin
+        $hacks = $show_all_records ? Hack::query() : $user->hacks();
 
 
         if ($filter_domains != null) {
@@ -122,18 +125,53 @@ class HacksController extends Controller
     }
 
 
+    public function sync_domains_anonymous_hack(ManageDomainsHackRequest $request, Hack $hack)
+    {
+        $validated = $request->validated();
+
+        $ids_to_sync = [];
+        $new_domains = []; // new - because on frontend we have all used domains
+
+        $domains = $validated['domains'];
+
+
+        if (!is_null($domains)) {
+            foreach ($domains as $domain) {
+                // if $domain not have id, than create;
+                if (isset($domain['id'])) {
+                    $ids_to_sync[] = $domain['id'];
+                    continue;
+                }
+
+
+                $new_domain = Domain::firstOrCreate(['name' => $domain['name']])->refresh();
+                $ids_to_sync[] = $new_domain->id;
+                $new_domains[] = $new_domain;
+            }
+        }
+
+        $hack->domains()->sync($ids_to_sync);
+
+
+        return ([
+            'bounded' => $ids_to_sync,
+            "new_domains" => $new_domains
+        ]);
+    }
+
+
     public function anonym_form_suggestion(UpdateAnonymHackRequest $request)
     {
         $params = $request->validated();
-        $creating_mode = isset($params['id']);
+        $updating_mode = isset($params['id']);
         $hack = null;
 
-        if ($creating_mode) {
-            $hack = Hack::create($params);
-            $hack->refresh(); // need to get id from DB
-        } else {
+        if ($updating_mode) {
             $hack = Hack::find($params['id']);
             $hack->update($params);
+        } else {
+            $hack = Hack::create($params);
+            $hack->refresh(); // need to get id from DB
         }
 
         return $hack;

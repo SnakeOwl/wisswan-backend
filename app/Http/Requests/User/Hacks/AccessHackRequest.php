@@ -16,7 +16,7 @@ class AccessHackRequest extends FormRequest
         $hack = $this->route("hack");
 
         // if Hack has no bound to User, then it's anonymous created Hack
-        return $hack->user_id == null
+        return $hack->user_id === null
             || Gate::forUser($user)->allows('edit-model', $hack);
     }
 }

@@ -2,8 +2,30 @@
 
 namespace App\Http\Requests\User\Hacks;
 
-class UpdateAnonymHackRequest extends AccessHackRequest
+use App\Models\Hack;
+use Illuminate\Foundation\Http\FormRequest;
+
+
+class UpdateAnonymHackRequest extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        $hackId = $this->has('id') ? $this->has('id') : null;
+
+        if ($hackId === null) // new anonymous Hack
+            return true;
+
+
+        $hack = Hack::where('id', $hackId)
+            ->whereNull('user_id')->first('id');
+
+        // if Hack has no bound to User, then it's anonymous created Hack
+        return $hack != null;
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *

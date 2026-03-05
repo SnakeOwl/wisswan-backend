@@ -1,10 +1,12 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    # Отключаем поиск index.html
+    DirectoryIndex disabled
     
     # Для /api и /storage - в /public
     RewriteRule ^(api|storage)(/.*)?$ public/$1$2 [L]
     
     # Для всего остального - прокси
-    RewriteCond %{REQUEST_URI}
     RewriteRule ^(.*)$ http://localhost:3030/$1 [P,L]
 </IfModule>

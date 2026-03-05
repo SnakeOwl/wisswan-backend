@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\User\Hacks\AccessHackRequest;
 use App\Http\Requests\User\Hacks\CreateHackRequest;
 use App\Http\Requests\User\Hacks\ManageDomainsHackRequest;
+use App\Http\Requests\User\Hacks\UpdateAnonymHackRequest;
 use App\Http\Requests\User\Hacks\UpdateHackRequest;
 use App\Models\Domain;
 use App\Models\Hack;
@@ -118,5 +119,23 @@ class HacksController extends Controller
             'bounded' => $ids_to_sync,
             "new_domains" => $new_domains
         ]);
+    }
+
+
+    public function anonym_form_suggestion(UpdateAnonymHackRequest $request)
+    {
+        $params = $request->validated();
+        $creating_mode = isset($params['id']);
+        $hack = null;
+
+        if ($creating_mode) {
+            $hack = Hack::create($params);
+            $hack->refresh(); // need to get id from DB
+        } else {
+            $hack = Hack::find($params['id']);
+            $hack->update($params);
+        }
+
+        return $hack;
     }
 }
